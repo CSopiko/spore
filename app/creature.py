@@ -80,7 +80,7 @@ class Creature:
             movement_class = MOVEMENTS[NO_LIMB][0][0]()
         stamina, position = movement_class.move()
         self.stamina += stamina
-        self.power += position
+        self.position += position
 
     def attack(self) -> int:
         claw = [c for c in ATTACKS[CLAWS] if c == CLAWS_TYPES[self.claws_type]]
