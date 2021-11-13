@@ -21,7 +21,7 @@ def evolve_creatures() -> Tuple[Creature, Creature]:
     return predator, prey
 
 
-def chase(predator, prey) -> bool:
+def chase(predator: Creature, prey: Creature) -> bool:
     """
     :param predator: Creature chases something to eat
     :param prey: Creature that's wanted to be eaten
@@ -39,7 +39,7 @@ def chase(predator, prey) -> bool:
         # log_characteristic(prey, 'Prey')
 
 
-def combat(predator, prey) -> None:
+def combat(predator: Creature, prey: Creature) -> None:
     while True:
         if predator.get_health() <= 0:
             log_predator_runs_out_of_health()
