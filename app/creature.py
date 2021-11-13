@@ -1,4 +1,5 @@
 from random import randint, sample
+from typing import Any
 
 from attack import *
 from movement import *
@@ -49,6 +50,21 @@ ATTACKS = {CLAWS: {CLAWS_TYPES[SMALL]: [SmallClawsAttack],
                    TEETH_TYPES[NO_TEETH]: [DefaultAttack]}}
 
 
+def generate_characteristics(min_position: int = POSITION_RANGE[0],
+                             max_position: int = POSITION_RANGE[1]) -> tuple[int, int, int, int, int, int, Any, Any]:
+    position = randint(min_position, max_position)
+    power = randint(POWER_RANGE[0], POWER_RANGE[1])
+    health = randint(HEALTH_RANGE[0], HEALTH_RANGE[1])
+    stamina = randint(STAMINA_RANGE[0], STAMINA_RANGE[1])
+
+    legs = randint(LEG_NUM_RANGE[0], LEG_NUM_RANGE[1])
+    wings = randint(WING_NUM_RANGE[0], WING_NUM_RANGE[1])
+    claws_type = {v: k for k, v in CLAWS_TYPES.items()}[randint(0, len(CLAWS_TYPES) - 1)]
+    teeth_type = {v: k for k, v in TEETH_TYPES.items()}[randint(0, len(TEETH_TYPES) - 1)]
+
+    return position, power, health, stamina, legs, wings, claws_type, teeth_type
+
+
 @dataclass
 class Creature:
     # position: int
@@ -56,16 +72,18 @@ class Creature:
     # health: int = 100
     # stamina: int = 100
 
-    def __init__(self):
-        self.power = randint(POWER_RANGE[0], POWER_RANGE[1])
-        self.health = randint(HEALTH_RANGE[0], HEALTH_RANGE[1])
-        self.stamina = randint(STAMINA_RANGE[0], STAMINA_RANGE[1])
-        self.position = randint(POSITION_RANGE[0], POSITION_RANGE[1])
+    def __init__(self, position: int = 0, power: int = 1, health: int = 100, stamina: int = 100,
+                 legs: int = 0, wings: int = 0, claws_type: str = NO_CLAW,
+                 teeth_type: str = NO_TEETH):
+        self.position = position
+        self.power = power
+        self.health = health
+        self.stamina = stamina
 
-        self.legs = randint(LEG_NUM_RANGE[0], LEG_NUM_RANGE[1])
-        self.wings = randint(WING_NUM_RANGE[0], WING_NUM_RANGE[1])
-        self.claws_type = {v: k for k, v in CLAWS_TYPES.items()}[randint(0, len(CLAWS_TYPES) - 1)]
-        self.teeth_type = {v: k for k, v in TEETH_TYPES.items()}[randint(0, len(TEETH_TYPES) - 1)]
+        self.legs = legs
+        self.wings = wings
+        self.claws_type = claws_type
+        self.teeth_type = teeth_type
 
     def movement(self) -> None:
         leg = [k for k in MOVEMENTS[LEGS] if self.legs >= k] + [-1]
@@ -112,13 +130,15 @@ class Creature:
 
 @dataclass
 class Predator(Creature):
-    def __init__(self, max_position=POSITION_RANGE[1]):
-        super(Predator, self).__init__()
-        self.position = randint(POSITION_RANGE[0], max_position - 1)
+    def __init__(self, max_pos=POSITION_RANGE[1]):
+        predator_chars = generate_characteristics(max_position=max_pos - 1)
+        super(Predator, self).__init__(predator_chars[0], predator_chars[1], predator_chars[2], predator_chars[3],
+                                       predator_chars[4], predator_chars[5], predator_chars[6], predator_chars[7])
 
 
 @dataclass
 class Prey(Creature):
     def __init__(self):
-        super(Prey, self).__init__()
-        self.position = randint(POSITION_RANGE[0] + 1, POSITION_RANGE[1])
+        prey_chars = generate_characteristics(min_position=POSITION_RANGE[0] + 1)
+        super(Prey, self).__init__(prey_chars[0], prey_chars[1], prey_chars[2], prey_chars[3],
+                                   prey_chars[4], prey_chars[5], prey_chars[6], prey_chars[7])
