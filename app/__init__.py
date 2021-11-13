@@ -16,8 +16,8 @@ def main() -> None:
 def evolve_creatures() -> Tuple[Creature, Creature]:
     prey = Prey()
     predator = Predator(prey.position)
-    # log_characteristic(predator, 'Predator')
-    # log_characteristic(prey, 'Prey')
+    log_characteristic(predator, 'Predator')
+    log_characteristic(prey, 'Prey')
     return predator, prey
 
 
@@ -40,8 +40,6 @@ def chase(predator, prey) -> bool:
 
 
 def combat(predator, prey) -> None:
-    log_combat_starts()
-    log_characteristic()
     while True:
         if predator.get_health() <= 0:
             log_predator_runs_out_of_health()
